@@ -17,6 +17,8 @@ class State:
         raise ValueError(f'Trying to switch to state {new_state} on default state class')
     def __timer__(self, timer_name: str, timer_data: StateTimerData, blocked_by: list[str] = [], cancels: list[str] = []):
         raise ValueError(f'Trying to create timer of {time} seconds on default state class')
+    def __call__(self, name: str, *args):
+        raise ValueError(f'Trying to call function {name} on default state class')
     def repr(self) -> str:
         return type(self).__name__
 
@@ -100,6 +102,11 @@ class StateMachine:
             lambda _, timer_name, timer_data, blocked_by = [], cancels = []: (
                 self.timer(timer_name, timer_data, blocked_by, cancels)
             )
+        )
+        setattr(
+            state,
+            '__call__',
+            lambda _, name, *args: self.call(name, *args)
         )
 
         self.states.append(state)

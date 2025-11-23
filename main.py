@@ -79,9 +79,21 @@ class DashingPlayer(State):
             [],
             ['moving']
         )
+        self.__timer__(
+            'test',
+            StateTimerData(5, self.__call__, 'move', 9, 9),
+            [],
+            []
+        )
+        self.__timer__(
+            'test2',
+            StateTimerData(5, self.move, 9, 9),
+            [],
+            []
+        )
         print('DASHING')
 
-    def move(self, direction, speed):
+    def move(self, direction, speed): 
         print('cannot move while dashing')
         pass
 
