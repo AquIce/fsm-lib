@@ -17,7 +17,7 @@ class State:
         raise ValueError(f'Trying to switch to state {new_state} on default state class')
     def __timer__(self, timer_name: str, timer_data: StateTimerData, blocked_by: list[str] = [], cancels: list[str] = []):
         raise ValueError(f'Trying to create timer of {time} seconds on default state class')
-    def __call__(self, name: str, *args):
+    def __call__(self, name: str, *args, **kwargs):
         raise ValueError(f'Trying to call function {name} on default state class')
     def repr(self) -> str:
         return type(self).__name__
@@ -106,7 +106,7 @@ class StateMachine:
         setattr(
             state,
             '__call__',
-            lambda _, name, *args: self.call(name, *args)
+            lambda _, name, *args, **kwargs: self.call(name, *args, **kwargs)
         )
 
         self.states.append(state)
@@ -146,11 +146,11 @@ class StateMachine:
             setattr(self.active, key, value)
         return self.active
 
-    def call(self, method: str, *args) -> Any:
+    def call(self, method: str, *args, **kwargs) -> Any:
         print(f'Calling {method} with args {args}')
         if self.active == None:
             raise ValueError(f'Trying to call method while StateMachine is stopped')
-        return getattr(self.active, method)(*args)
+        return getattr(self.active, method)(*args, **kwargs)
 
     def stop(self):
         if self.active == None:
